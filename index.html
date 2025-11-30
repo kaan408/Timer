@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Revenge Warriors 5 - Countdown</title>
-    <!-- Oyun atmosferi için fontlar -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;900&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CSS BAŞLANGICI --- */
+        /* --- CSS AYARLARI --- */
         :root {
             --neon-red: #ff1a1a;
+            --neon-blue: #00f3ff; /* İkinci bir renk ekledim, kontrast için */
             --dark-bg: #0a0a0a;
             --glass: rgba(0, 0, 0, 0.7);
         }
@@ -29,16 +29,15 @@
             user-select: none;
         }
 
-        /* Arka Plan (Blurlu Resim) */
+        /* Arka Plan */
         .background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Resim yoksa siyah kalsın diye background-color ekledik */
             background-color: #111; 
-            background-image: url('glg.png');
+            background-image: url('glg.png'); /* Resim yoksa siyah kalır */
             background-size: cover;
             background-position: center;
             filter: blur(8px) brightness(0.4);
@@ -46,7 +45,7 @@
             z-index: -1;
         }
 
-        /* Giriş Ekranı (Ses İzni İçin) */
+        /* Giriş Ekranı */
         #overlay {
             position: fixed;
             top: 0;
@@ -72,12 +71,12 @@
             animation: textPulse 1.5s infinite alternate;
         }
 
-        /* Ana İçerik Kutusu */
+        /* Ana İçerik */
         .container {
             text-align: center;
             position: relative;
             z-index: 10;
-            opacity: 0; /* Başlangıçta gizli */
+            opacity: 0;
             transition: opacity 2s ease;
             transform: skewX(-5deg);
             width: 100%;
@@ -86,7 +85,7 @@
 
         .game-logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             text-transform: uppercase;
             margin: 0;
@@ -100,12 +99,51 @@
 
         .subtitle {
             color: var(--neon-red);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             letter-spacing: 6px;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             font-weight: 700;
             text-shadow: 0 0 10px var(--neon-red);
             margin-top: 10px;
+        }
+
+        /* YENİ EKLENEN: Saat Bilgi Çubuğu */
+        .info-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #333;
+            border-bottom: 2px solid var(--neon-red); /* Alt çizgi kırmızı */
+            padding: 10px 25px;
+            min-width: 150px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        
+        /* Hedef saati mavi yapalım ki fark belli olsun */
+        .info-item.target {
+            border-bottom: 2px solid var(--neon-blue);
+        }
+
+        .info-item .info-label {
+            font-size: 0.8rem;
+            color: #aaa;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-item .info-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
         /* Sayaç Kutuları */
@@ -141,14 +179,13 @@
             font-weight: 600;
         }
 
-        /* Tik-Tok vuruş efekti */
         .tick-effect {
             transform: scale(1.05);
             border-left-color: #fff;
             box-shadow: 0 0 25px var(--neon-red);
         }
 
-        /* Müzik Player (Sol Alt) */
+        /* Müzik Player */
         .music-hud {
             position: fixed;
             bottom: 30px;
@@ -167,42 +204,17 @@
             transform: skewX(-5deg);
         }
 
-        /* Ekolayzer Animasyonu */
-        .equalizer {
-            display: flex;
-            gap: 3px;
-            height: 20px;
-            align-items: flex-end;
-        }
-        .bar {
-            width: 4px;
-            background: var(--neon-red);
-            animation: equalizerAnim 0.5s infinite ease-in-out alternate;
-        }
+        .equalizer { display: flex; gap: 3px; height: 20px; align-items: flex-end; }
+        .bar { width: 4px; background: var(--neon-red); animation: equalizerAnim 0.5s infinite ease-in-out alternate; }
         .bar:nth-child(2) { animation-delay: 0.1s; height: 15px; }
         .bar:nth-child(3) { animation-delay: 0.2s; height: 10px; }
         .bar:nth-child(4) { animation-delay: 0.3s; height: 18px; }
 
-        .track-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .info-label {
-            font-size: 0.7rem;
-            color: #888;
-            letter-spacing: 1px;
-        }
-        .track-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .track-info { display: flex; flex-direction: column; }
+        .info-label-music { font-size: 0.7rem; color: #888; letter-spacing: 1px; }
+        .track-name { font-size: 1rem; font-weight: 700; color: #fff; white-space: nowrap; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Alt Haber Bandı (Kayan Yazı) */
+        /* Haber Bandı */
         .news-ticker-container {
             position: fixed;
             bottom: 0;
@@ -219,51 +231,32 @@
         .news-ticker-content {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee 20s linear infinite;
+            animation: marquee 25s linear infinite;
             color: #ccc;
             font-size: 0.9rem;
             letter-spacing: 2px;
-            font-family: 'Rajdhani', sans-serif;
         }
         
-        .news-item {
-            margin-right: 100px;
-        }
+        .news-item { margin-right: 100px; }
 
-        @keyframes marquee {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        @keyframes textPulse { from { opacity: 0.4; } to { opacity: 1; text-shadow: 0 0 20px red; } }
+        @keyframes equalizerAnim { 0% { height: 5px; } 100% { height: 20px; } }
 
-        @keyframes textPulse {
-            from { opacity: 0.4; }
-            to { opacity: 1; text-shadow: 0 0 20px red; }
-        }
-
-        @keyframes equalizerAnim {
-            0% { height: 5px; }
-            100% { height: 20px; }
-        }
-
-        /* Mobil Uyumluluk */
+        /* Mobil */
         @media (max-width: 768px) {
-            .game-logo { font-size: 2rem; margin-top: -50px; }
-            .subtitle { font-size: 1rem; letter-spacing: 3px; }
+            .game-logo { font-size: 2rem; margin-top: -30px; }
+            .subtitle { font-size: 0.9rem; }
+            
+            .info-bar { flex-direction: column; gap: 10px; margin-bottom: 20px; }
+            .info-item { min-width: auto; padding: 5px 15px; width: 80%; margin: 0 auto; }
+            .info-item .info-val { font-size: 1rem; }
+            
             .timer-wrapper { gap: 10px; }
             .time-box { min-width: 65px; padding: 10px; border-left-width: 3px; }
             .time-box span { font-size: 1.8rem; }
-            .time-box .label { font-size: 0.7rem; }
             
-            .music-hud { 
-                bottom: 50px; /* Haber bandının üstüne */
-                left: 10px; 
-                padding: 10px; 
-                transform: skewX(0); 
-                max-width: 250px;
-            }
-            .news-ticker-container {
-                padding: 8px 0;
-            }
+            .music-hud { bottom: 50px; left: 10px; padding: 10px; transform: skewX(0); max-width: 250px; }
         }
     </style>
 </head>
@@ -276,19 +269,26 @@
         <p style="color:#666; font-size:0.8rem; margin-top:10px;">[ INITIALIZING SEQUENCE... ]</p>
     </div>
 
-    <!-- SES ELEMENTLERİ -->
     <audio id="bgAudioElement"></audio> 
-    
-    <audio id="tikSound">
-        <source src="tk.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="tokSound">
-        <source src="tok.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="tikSound"><source src="tk.mp3" type="audio/mpeg"></audio>
+    <audio id="tokSound"><source src="tok.mp3" type="audio/mpeg"></audio>
 
     <div class="container" id="mainContent">
         <h1 class="game-logo">The Revenge Warriors 5 <br> Son Oyun</h1>
         <div class="subtitle">Gölgeler Bu Kez Kazanamaz...</div>
+
+        <!-- YENİ BÖLÜM: SAAT BİLGİLERİ -->
+        <div class="info-bar">
+            <div class="info-item">
+                <div class="info-label">SİSTEM SAATİ</div>
+                <div class="info-val" id="currentClock">--:--:--</div>
+            </div>
+            <div class="info-item target">
+                <div class="info-label">HEDEF ZAMAN</div>
+                <div class="info-val" id="targetClock">--:--:--</div>
+            </div>
+        </div>
+        <!-- BİTİŞ -->
 
         <div class="timer-wrapper">
             <div class="time-box">
@@ -310,17 +310,17 @@
         </div>
     </div>
 
-    <!-- ALT HABER BANDI (KAYAN YAZI) -->
+    <!-- Haber Bandı -->
     <div class="news-ticker-container" id="newsTicker" style="opacity: 0; transition: opacity 2s ease;">
         <div class="news-ticker-content">
             <span class="news-item">> SİSTEM MESAJI: Allah'ın izniyle yayınlayacağız artık.</span>
             <span class="news-item">> DURUM: Göğsünün daraldığını biliyoruz - Hicr 97. Ayet</span>
-            <span class="news-item">> UYARI: Hazırlıklar tamamlanmak üzere...</span>
+            <span class="news-item">> SENKRONİZASYON: Zaman akıyor...</span>
             <span class="news-item">> SON DAKİKA: Karanlık yaklaşıyor.</span>
         </div>
     </div>
 
-    <!-- MÜZİK BİLGİ KUTUSU -->
+    <!-- Müzik Kutusu -->
     <div class="music-hud" id="musicHud">
         <div class="equalizer">
             <div class="bar"></div>
@@ -329,7 +329,7 @@
             <div class="bar"></div>
         </div>
         <div class="track-info">
-            <div class="info-label">ŞU AN ÇALIYOR</div>
+            <div class="info-label-music">ŞU AN ÇALIYOR</div>
             <div class="track-name" id="currentTrackName">Yükleniyor...</div>
         </div>
     </div>
@@ -337,25 +337,28 @@
     <script>
         // --- JAVASCRIPT ---
 
-        // HTML Elementlerini Seç
         const overlay = document.getElementById('overlay');
         const mainContent = document.getElementById('mainContent');
         const musicHud = document.getElementById('musicHud');
         const newsTicker = document.getElementById('newsTicker');
         const trackNameEl = document.getElementById('currentTrackName');
         
+        // Sayaç elementleri
         const daysEl = document.getElementById('days');
         const hoursEl = document.getElementById('hours');
         const minutesEl = document.getElementById('minutes');
         const secondsEl = document.getElementById('seconds');
         const timeBoxes = document.querySelectorAll('.time-box');
 
-        // Ses Dosyaları
+        // Yeni saat elementleri
+        const currentClockEl = document.getElementById('currentClock');
+        const targetClockEl = document.getElementById('targetClock');
+
+        // Sesler
         const bgAudio = document.getElementById('bgAudioElement');
         const tikSound = document.getElementById('tikSound');
         const tokSound = document.getElementById('tokSound');
 
-        // --- PLAYLIST AYARLARI ---
         const playlist = [
             { src: 'hatred-of-creation.m4a', title: 'Ana Tena - hatred of creation' },
             { src: 'fnaf-plus.m4a', title: 'Karanlık Tema - Fnaf Plus' },
@@ -365,11 +368,17 @@
         let currentTrackIndex = 0;
         let isTik = true;
 
-        // DÜZELTİLEN KISIM: Tarih formatı düzeltildi
-        // 1 Aralık 2025, Saat 19:20:00
-        const targetDate = new Date('December 1, 2025 19:20:00').getTime();
+        // HEDEF TARİH: 1 Aralık 2025, Saat 19:20:00
+        const targetDateObj = new Date('December 1, 2025 19:20:00');
+        const targetDate = targetDateObj.getTime();
 
-        // Başlatma (Tıklama ile)
+        // Hedef saati ekrana yaz (Format: 01 Aralık - 19:20)
+        const targetFormatter = new Intl.DateTimeFormat('tr-TR', { 
+            day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+        });
+        targetClockEl.innerText = targetFormatter.format(targetDateObj);
+
+        // Başlatma
         overlay.addEventListener('click', () => {
             overlay.style.opacity = '0';
             setTimeout(() => {
@@ -377,50 +386,41 @@
                 mainContent.style.opacity = '1';
                 musicHud.style.opacity = '1';
                 newsTicker.style.opacity = '1';
-                
-                // Müzik çalmaya başla
                 playTrack(currentTrackIndex);
-                
-                // Sayacı Başlat
                 startTimer();
             }, 1000);
         });
 
-        // --- MÜZİK FONKSİYONLARI ---
         function playTrack(index) {
-            if (index >= playlist.length) index = 0; // Liste bittiyse başa dön
+            if (index >= playlist.length) index = 0;
             currentTrackIndex = index;
-
             bgAudio.src = playlist[index].src;
-            bgAudio.volume = 0.4; // Müzik sesi biraz kısıldı ki efektler duyulsun
-            bgAudio.play().catch(e => console.log("Oynatma hatası:", e));
-
+            bgAudio.volume = 0.4;
+            bgAudio.play().catch(e => console.log("Hata:", e));
             trackNameEl.innerText = playlist[index].title;
         }
 
-        // Şarkı bittiğinde sıradakine geç
         bgAudio.addEventListener('ended', () => {
             currentTrackIndex++;
-            if (currentTrackIndex >= playlist.length) {
-                currentTrackIndex = 0;
-            }
+            if (currentTrackIndex >= playlist.length) currentTrackIndex = 0;
             playTrack(currentTrackIndex);
         });
 
-        // --- SAYAÇ FONKSİYONLARI ---
         function updateCountdown() {
-            const now = new Date().getTime();
+            const nowObj = new Date();
+            const now = nowObj.getTime();
             const distance = targetDate - now;
 
+            // 1. ŞU ANKİ SAATİ GÜNCELLE
+            // Saniye bilgisini de göstermek daha "cyber" durur
+            currentClockEl.innerText = nowObj.toLocaleTimeString('tr-TR');
+
+            // 2. SAYACI GÜNCELLE
             if (distance < 0) {
                 clearInterval(interval);
                 document.querySelector('.game-logo').innerText = "VAKİT GELDİ!";
-                document.querySelector('.subtitle').innerText = "Kanalı kontrol et...";
-                
-                daysEl.innerText = "00";
-                hoursEl.innerText = "00";
-                minutesEl.innerText = "00";
-                secondsEl.innerText = "00";
+                document.querySelector('.subtitle').innerText = "Yayın Başladı.";
+                daysEl.innerText = "00"; hoursEl.innerText = "00"; minutesEl.innerText = "00"; secondsEl.innerText = "00";
                 return;
             }
 
@@ -434,37 +434,22 @@
             minutesEl.innerText = minutes < 10 ? '0' + minutes : minutes;
             secondsEl.innerText = seconds < 10 ? '0' + seconds : seconds;
 
-            // Her saniye efektler
             playTickTock();
             visualBeat();
         }
 
         function playTickTock() {
-            // Seslerin üst üste binmesini engelle
-            tikSound.pause();
-            tokSound.pause();
-            tikSound.currentTime = 0;
-            tokSound.currentTime = 0;
-            
-            // Efekt sesleri
-            tikSound.volume = 0.6; 
-            tokSound.volume = 0.6;
-
-            if (isTik) {
-                tikSound.play().catch(()=>{});
-            } else {
-                tokSound.play().catch(()=>{});
-            }
+            tikSound.pause(); tokSound.pause();
+            tikSound.currentTime = 0; tokSound.currentTime = 0;
+            tikSound.volume = 0.5; tokSound.volume = 0.5;
+            isTik ? tikSound.play().catch(()=>{}) : tokSound.play().catch(()=>{});
             isTik = !isTik;
         }
 
         function visualBeat() {
-            // Kutulara anlık parlama/büyüme efekti ver
             timeBoxes.forEach(box => {
                 box.classList.add('tick-effect');
-                setTimeout(() => {
-                    box.classList.remove('tick-effect');
-                }, 150); // 150ms sonra efekti kaldır
+                setTimeout(() => box.classList.remove('tick-effect'), 150);
             });
         }
 
